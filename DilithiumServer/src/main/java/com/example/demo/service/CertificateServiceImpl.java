@@ -132,13 +132,15 @@ public class CertificateServiceImpl implements CertificateService {
 			PublicKey publicKey = keyPair.getPublic();
 
 			// Store Public Key.
-			DilithiumPublicKeySpec encodedPublicKeySpec = new DilithiumPublicKeySpec(this.spec, publicKey.getEncoded());
+			DilithiumPublicKeySpec encodedPublicKeySpec = 
+					new DilithiumPublicKeySpec(this.spec, publicKey.getEncoded());
 			FileOutputStream fos = new FileOutputStream("./public.key");
 			fos.write(encodedPublicKeySpec.getBytes());
 			fos.close();
 
 			// Store Private Key.
-			DilithiumPrivateKeySpec encodedPrivateKeySpec = new DilithiumPrivateKeySpec(this.spec, privateKey.getEncoded());
+			DilithiumPrivateKeySpec encodedPrivateKeySpec = 
+					new DilithiumPrivateKeySpec(this.spec, privateKey.getEncoded());
 			fos = new FileOutputStream("./private.key");
 			fos.write(encodedPrivateKeySpec.getBytes());
 			fos.close();
