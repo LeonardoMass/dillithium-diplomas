@@ -1,14 +1,19 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Table, Form } from 'react-bootstrap';
 import { HOST, PORT } from './constant'
-import html2pdf from 'html2pdf.js';
-export const CertiSearch = () => {
+import { useParams } from 'react-router-dom';
+export const CertiShow = () => {
+    const { id } = useParams();
     const [certi, setCerti] = useState(null)
-    const [findingCertiID, setFindingCertiID] = useState(null)
     const [searchFirstTime, setsearchFirstTime] = useState(false)
     const [isValidCerti, setIsValidCerti] = useState(false)
     const [messageCerti, setMessageCerti] = useState("")
+
+
+    useEffect(() => {
+        fetchCerti(id)
+    }, [])
 
     const fetchCerti = (id) => {
         var requestOptions = {
@@ -48,6 +53,9 @@ export const CertiSearch = () => {
 
             })
             .catch(error => console.log('error', error));
+
+
+
     }
 
     const getMessageCerti = (id) => {
@@ -64,41 +72,18 @@ export const CertiSearch = () => {
             })
             .catch(error => console.log('error', error));
     }
-    function pdf() {
-        const content = document.querySelector("#content")
-        const options = {
-            filename: `diploma-${certi.name}.pdf`,
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-        }
-        html2pdf().set(options).from(content).save();
-    }
+    
 
-    function Hyperlink() {
-        var hyper = `http://${HOST}:3000/certificate/${certi.id}`;
-
-        return <a href={hyper}> <tr>
-            <Button variant="primary" >
-                --------- Verificar pelo próprio emissor ---------
-            </Button>
-        </tr>"</a>;
-    }
     return (
-        <div className="App">
+        <div className="App" id="content">
 
             <Form>
                 <Form.Group controlId="formBasicEmail">
-                    <h2>Procurar diploma por id</h2>
-                    <Form.Control onChange={e => setFindingCertiID(e.target.value)} placeholder="ID" />
-                    <Button className="margin-top" variant="primary" onClick={() => fetchCerti(findingCertiID)}>
-                        Procurar
-                    </Button>
                     <br />
-                    {certi != null && <Table className="margin-top" striped bordered hover variant="dark" id="content">
+                    {certi != null && <Table className="margin-top" striped bordered hover variant="dark">
                         <thead>
                             <tr>
                                 <th>Informações sobre o diploma</th>
-                                <th><Button onClick={() => pdf()}>Download pdf</Button></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -134,7 +119,7 @@ export const CertiSearch = () => {
                                 <td>SQL</td>
                                 <td>
                                     {certi.signature && messageCerti.substring(0, 50) + " ..."}
-                                    <br/>
+                                    <br />
                                     {certi.signature && <Button className="margin-top" onClick={() => { navigator.clipboard.writeText(messageCerti) }} variant="success">
                                         Copiar
                                     </Button>}
@@ -145,7 +130,7 @@ export const CertiSearch = () => {
                                 <td>Confirmação da assinatura</td>
                                 <td>
                                     {certi.signature == null ? "Não assinado" : certi.signature.substring(0, 50) + " ..."}
-                                    <br/>
+                                    <br />
                                     {certi.signature && <Button className="margin-top" onClick={() => { navigator.clipboard.writeText(certi.signature) }} variant="success">
                                         Copiar
                                     </Button>}
@@ -157,8 +142,6 @@ export const CertiSearch = () => {
                                 <td>
                                     {certi.signature == null && "Não assinado"}
                                     {certi.signature && (isValidCerti == true ? "Válido" : "Ilegal")}
-                                    <br /><br />
-                                    <Hyperlink />
                                 </td>
                             </tr>
                         </tbody>
