@@ -131,7 +131,7 @@ export const CertiSearch = () => {
                                 <td>{certi.grade}</td>
                             </tr>
                             <tr>
-                                <td>SQL</td>
+                                <td>ToString</td>
                                 <td>
                                     {certi.signature && messageCerti.substring(0, 50) + " ..."}
                                     <br/>
